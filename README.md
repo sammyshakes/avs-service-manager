@@ -1,66 +1,35 @@
-## Foundry
+# AVSServiceManager Deployment and Testing Guide
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Introduction
 
-Foundry consists of:
+This guide provides instructions for setting up, deploying, and testing the `AVSServiceManager` on the Holesky testnet using Foundry.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Environment Variables
 
-## Documentation
+Set up the following environment variables:
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```sh
+export HOLESKY_RPC_URL=<your_holesky_rpc_url>
+export ETHERSCAN_API_KEY=<your_etherscan_api_key>
+export DEPLOYER_PRIVATE_KEY=<your_deployer_private_key>
 ```
 
-### Test
+Replace `<your_holesky_rpc_url>`, `<your_etherscan_api_key>`, and `<your_deployer_private_key>` with your Holesky RPC URL, Etherscan API key, and deployer private key, respectively.
 
-```shell
-$ forge test
+## Running Tests
+
+To run the tests for your smart contracts, use the following command:
+
+```sh
+forge test -vvvv --rpc-url $HOLESKY_RPC_URL
 ```
 
-### Format
+## Running the Deployment Script
 
-```shell
-$ forge fmt
+To deploy the `AVSServiceManager` using the provided script, run the following command:
+
+```sh
+forge script script/CustomAVSServiceManagerSetup.s.sol -vvvv --rpc-url $HOLESKY_RPC_URL --via-ir --legacy
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+> NOTE: The deployer account must have sufficient holesky testnet funds to deploy the smart contract.
