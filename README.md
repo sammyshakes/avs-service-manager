@@ -18,7 +18,7 @@ Replace `<your_holesky_rpc_url>`, `<your_etherscan_api_key>`, and `<your_deploye
 
 ## Running Tests
 
-To run the tests for your smart contracts, use the following command:
+To run the tests, use the following command:
 
 ```sh
 forge test -vvvv --rpc-url $HOLESKY_RPC_URL
