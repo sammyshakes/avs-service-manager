@@ -27,37 +27,106 @@ contract CustomAVSServiceManagerSetup is Script {
     StakeRegistry public stakeRegistry;
 
     uint256 _deployerPrivateKey = uint256(vm.envBytes32("DEPLOYER_PRIVATE_KEY"));
+    address _deployerAddress = vm.envAddress("DEPLOYER_ADDRESS");
 
     function run() external {
         vm.startBroadcast(_deployerPrivateKey);
 
         // Define addresses for core contracts and strategies
-        address proxyAdminOwner = address(0x001);
+        address paymentCoordinator = address(0x002);
+
+        // Holesky deployed EigenLayer contracts
         address avsDirectory = 0x055733000064333CaDDbC92763c58BF0192fFeBf;
-        address paymentCoordinator = 0x0000000000000000000000000000000000000003;
         address delegationManager = 0xA44151489861Fe9e3055d95adC98FbD462B948e7;
-        address pauserRegistryAddress = 0x0000000000000000000000000000000000000006;
 
         // Define strategy addresses
-        address[] memory strategyAddresses = new address[](10);
-        strategyAddresses[0] = 0x7D704507b76571a51d9caE8AdDAbBFd0ba0e63d3; // stETH
-        strategyAddresses[1] = 0x3A8fBdf9e77DFc25d09741f51d3E181b25d0c4E0; // rETH
-        strategyAddresses[2] = 0x80528D6e9A2BAbFc766965E0E26d5aB08D9CFaF9; // WETH
-        strategyAddresses[3] = 0x05037A81BD7B4C9E0F7B430f1F2A22c31a2FD943; // lsETH
-        strategyAddresses[4] = 0x9281ff96637710Cd9A5CAcce9c6FAD8C9F54631c; // sfrxETH
-        strategyAddresses[5] = 0x31B6F59e1627cEfC9fA174aD03859fC337666af7; // ETHx
-        strategyAddresses[6] = 0x46281E3B7fDcACdBa44CADf069a94a588Fd4C6Ef; // osETH
-        strategyAddresses[7] = 0x70EB4D3c164a6B4A5f908D4FBb5a9cAfFb66bAB6; // cbETH
-        strategyAddresses[8] = 0xaccc5A86732BE85b5012e8614AF237801636F8e5; // mETH
-        strategyAddresses[9] = 0x7673a47463F80c6a3553Db9E54c8cDcd5313d0ac; // ankrETH
+        address[] memory availableStrategyAddresses = new address[](10);
+        availableStrategyAddresses[0] = 0x7D704507b76571a51d9caE8AdDAbBFd0ba0e63d3; // stETH
+        availableStrategyAddresses[1] = 0x3A8fBdf9e77DFc25d09741f51d3E181b25d0c4E0; // rETH
+        availableStrategyAddresses[2] = 0x80528D6e9A2BAbFc766965E0E26d5aB08D9CFaF9; // WETH
+        availableStrategyAddresses[3] = 0x05037A81BD7B4C9E0F7B430f1F2A22c31a2FD943; // lsETH
+        availableStrategyAddresses[4] = 0x9281ff96637710Cd9A5CAcce9c6FAD8C9F54631c; // sfrxETH
+        availableStrategyAddresses[5] = 0x31B6F59e1627cEfC9fA174aD03859fC337666af7; // ETHx
+        availableStrategyAddresses[6] = 0x46281E3B7fDcACdBa44CADf069a94a588Fd4C6Ef; // osETH
+        availableStrategyAddresses[7] = 0x70EB4D3c164a6B4A5f908D4FBb5a9cAfFb66bAB6; // cbETH
+        availableStrategyAddresses[8] = 0xaccc5A86732BE85b5012e8614AF237801636F8e5; // mETH
+        availableStrategyAddresses[9] = 0x7673a47463F80c6a3553Db9E54c8cDcd5313d0ac; // ankrETH
 
-        uint32 defaultMaxOperatorCount = 10;
-        uint16 defaultKickBIPsOfOperatorStake = 15000;
-        uint16 defaultKickBIPsOfTotalStake = 150;
-        uint8 numQuorums = 2;
-        uint96 minimumStake = 1000;
-        uint96 strategyMultiplier = 1;
+        /////////// USER INPUTS ///////////
+        // Define the number of quorums
+        uint8 numQuorums = 2; // EDIT THIS for your specific use case
 
+        IRegistryCoordinator.OperatorSetParam[] memory operatorSetParams =
+            new IRegistryCoordinator.OperatorSetParam[](numQuorums);
+        address[] memory strategyAddresses = new address[](numQuorums);
+        uint96[] memory strategyMultipliers = new uint96[](numQuorums);
+        uint96[] memory minimumStakes = new uint96[](numQuorums);
+
+        /////////////////////////////////
+        // CREATE OPERATOR SET PARAMS FOR QUORUMS
+        // Edit parameters for your specific use case.
+        //
+        // maxOperatorCount: Maximum number of operators allowed in the quorum
+        // kickBIPsOfOperatorStake: Basis points that new Operator's stake must be greater than the old Operator's stake by to kick from quorum
+        // kickBIPsOfTotalStake: Basis points of the total stake of the quorum that an operator needs to maintain or be kicked
+
+        // Operator Set Params for Quorum 1
+        operatorSetParams[0] = IRegistryCoordinator.OperatorSetParam({
+            maxOperatorCount: 10, // EDIT THIS
+            kickBIPsOfOperatorStake: 15000, // EDIT THIS
+            kickBIPsOfTotalStake: 150 // EDIT THIS
+        });
+        // Operator Set Params for Quorum 2
+        operatorSetParams[1] = IRegistryCoordinator.OperatorSetParam({
+            maxOperatorCount: 20, // EDIT THIS
+            kickBIPsOfOperatorStake: 5000, // EDIT THIS
+            kickBIPsOfTotalStake: 100 // EDIT THIS
+        });
+        // Operator Set Params for Quorum 3
+        // operatorSetParams[2] = IRegistryCoordinator.OperatorSetParam({
+        //     maxOperatorCount: 30,
+        //     kickBIPsOfOperatorStake: 10000,
+        //     kickBIPsOfTotalStake: 200
+        // });
+
+        /////////////////////////////////
+        // CREATE STRATEGIES FOR QUORUMS
+        // Enter the index of the availableStrategyAddresses array above to create a strategy
+        strategyAddresses[0] = availableStrategyAddresses[0]; // stETH for Quorum 1
+        strategyAddresses[1] = availableStrategyAddresses[1]; // rETH for Quorum 2
+        // strategyAddresses[2] = availableStrategyAddresses[2]; // WETH for Quorum 3
+
+        /////////////////////////////////
+        // CREATE STRATEGY MULTIPLIERS FOR QUORUMS
+        // Enter the strategy multiplier for each quorum
+        strategyMultipliers[0] = 10; // EDIT for Quorum 1
+        strategyMultipliers[1] = 8; // EDIT for Quorum 2
+        // strategyMultipliers[2] = 1; // EDIT for Quorum 3
+
+        // DEFINE MINIMUM STAKES FOR EACH QUORUM
+        // Set the minimum stake for each quorum
+        minimumStakes[0] = 1000; // EDIT for Quorum 1
+        minimumStakes[1] = 1000; // EDIT for Quorum 2
+        // minimumStakes[2] = 1000; // EDIT for Quorum 3
+
+        /////////// END USER INPUTS ///////////
+
+        // Arrays must be the length of the number of quorums
+        require(strategyAddresses.length == numQuorums, "Strategy addresses length mismatch");
+        require(strategyMultipliers.length == numQuorums, "Strategy multipliers length mismatch");
+        require(minimumStakes.length == numQuorums, "Minimum stakes length mismatch");
+
+        // prepare input arrays for deployment
+        IStakeRegistry.StrategyParams[][] memory strategyParams = new IStakeRegistry.StrategyParams[][](numQuorums);
+        for (uint8 i = 0; i < numQuorums; i++) {
+            strategyParams[i] = new IStakeRegistry.StrategyParams[](1);
+            strategyParams[i][0] = IStakeRegistry.StrategyParams({
+                strategy: IStrategy(strategyAddresses[i]),
+                multiplier: strategyMultipliers[i]
+            });
+        }
+
+        // Deploy initial proxies
         proxyAdmin = new ProxyAdmin();
         emptyContract = new EmptyContract();
 
@@ -77,6 +146,7 @@ contract CustomAVSServiceManagerSetup is Script {
         stakeRegistry =
             StakeRegistry(address(new TransparentUpgradeableProxy(address(emptyContract), address(proxyAdmin), "")));
 
+        // Deploy implementations
         StakeRegistry stakeRegistryImplementation =
             new StakeRegistry(IRegistryCoordinator(address(registryCoordinator)), IDelegationManager(delegationManager));
 
@@ -86,6 +156,7 @@ contract CustomAVSServiceManagerSetup is Script {
         BLSApkRegistry blsApkRegistryImplementation =
             new BLSApkRegistry(IRegistryCoordinator(address(registryCoordinator)));
 
+        // Upgrade proxies
         proxyAdmin.upgrade(
             TransparentUpgradeableProxy(payable(address(stakeRegistry))), address(stakeRegistryImplementation)
         );
@@ -98,6 +169,7 @@ contract CustomAVSServiceManagerSetup is Script {
             TransparentUpgradeableProxy(payable(address(blsApkRegistry))), address(blsApkRegistryImplementation)
         );
 
+        // Deploy and upgrade RegistryCoordinator
         RegistryCoordinator registryCoordinatorImplementation = new RegistryCoordinator(
             IServiceManager(address(avsServiceManager)),
             IStakeRegistry(address(stakeRegistry)),
@@ -105,39 +177,15 @@ contract CustomAVSServiceManagerSetup is Script {
             IIndexRegistry(address(indexRegistry))
         );
 
-        IRegistryCoordinator.OperatorSetParam[] memory operatorSetParams =
-            new IRegistryCoordinator.OperatorSetParam[](numQuorums);
-        for (uint8 i = 0; i < numQuorums; i++) {
-            operatorSetParams[i] = IRegistryCoordinator.OperatorSetParam({
-                maxOperatorCount: defaultMaxOperatorCount,
-                kickBIPsOfOperatorStake: defaultKickBIPsOfOperatorStake,
-                kickBIPsOfTotalStake: defaultKickBIPsOfTotalStake
-            });
-        }
-
-        uint96[] memory minimumStakes = new uint96[](numQuorums);
-        for (uint8 i = 0; i < numQuorums; i++) {
-            minimumStakes[i] = minimumStake;
-        }
-
-        IStakeRegistry.StrategyParams[][] memory strategyParams = new IStakeRegistry.StrategyParams[][](numQuorums);
-        for (uint8 i = 0; i < numQuorums; i++) {
-            strategyParams[i] = new IStakeRegistry.StrategyParams[](1);
-            strategyParams[i][0] = IStakeRegistry.StrategyParams({
-                strategy: IStrategy(strategyAddresses[i % strategyAddresses.length]),
-                multiplier: strategyMultiplier
-            });
-        }
-
         proxyAdmin.upgradeAndCall(
             TransparentUpgradeableProxy(payable(address(registryCoordinator))),
             address(registryCoordinatorImplementation),
             abi.encodeWithSelector(
                 RegistryCoordinator.initialize.selector,
-                proxyAdminOwner,
-                proxyAdminOwner,
-                proxyAdminOwner,
-                IPauserRegistry(pauserRegistryAddress),
+                _deployerAddress,
+                _deployerAddress,
+                _deployerAddress,
+                IPauserRegistry(address(0x003)),
                 0,
                 operatorSetParams,
                 minimumStakes,
@@ -145,6 +193,7 @@ contract CustomAVSServiceManagerSetup is Script {
             )
         );
 
+        // Deploy and upgrade AVSServiceManager
         AVSServiceManager avsServiceManagerImplementation = new AVSServiceManager(
             IAVSDirectory(avsDirectory),
             IPaymentCoordinator(paymentCoordinator),
