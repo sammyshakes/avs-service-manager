@@ -54,7 +54,7 @@ contract CustomAVSServiceManagerSetup is Script {
         uint32 defaultMaxOperatorCount = 10;
         uint16 defaultKickBIPsOfOperatorStake = 15000;
         uint16 defaultKickBIPsOfTotalStake = 150;
-        uint8 numQuorums = 5;
+        uint8 numQuorums = 2;
         uint96 minimumStake = 1000;
         uint96 strategyMultiplier = 1;
 
