@@ -33,6 +33,18 @@ To deploy the `AVSServiceManager` using the provided script, run the following c
 forge script script/CustomAVSServiceManagerSetup.s.sol -vvvv --rpc-url $HOLESKY_RPC_URL --via-ir --legacy
 ```
 
+Output:
+
+```sh
+Script ran successfully.
+
+== Return ==
+0: string "AVS Service Manager setup complete, Registry Coordinator Address:"
+1: address 0x6542b3f921141049789130BBA48E9FB38F68C374
+```
+
+> NOTE: The output provides the address of the deployed `RegistryCoordinator` contract.
+
 > NOTE: The deployer account must have sufficient holesky testnet funds to deploy the smart contract.
 
 # Customizing the Deployment Script
