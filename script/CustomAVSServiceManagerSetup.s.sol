@@ -29,7 +29,7 @@ contract CustomAVSServiceManagerSetup is Script {
     uint256 _deployerPrivateKey = uint256(vm.envBytes32("DEPLOYER_PRIVATE_KEY"));
     address _deployerAddress = vm.envAddress("DEPLOYER_ADDRESS");
 
-    function run() external returns (string memory, address) {
+    function run() external returns (string memory, string memory, address, string memory, address) {
         vm.startBroadcast(_deployerPrivateKey);
 
         // Define addresses for core contracts and strategies
@@ -207,6 +207,12 @@ contract CustomAVSServiceManagerSetup is Script {
 
         vm.stopBroadcast();
 
-        return ("AVS Service Manager setup complete, Registry Coordinator Address:", address(registryCoordinator));
+        return (
+            "AVS Service Manager setup complete!",
+            "Registry Coordinator Address:",
+            address(registryCoordinator),
+            "BLSApkRegistry Address:",
+            address(blsApkRegistry)
+        );
     }
 }

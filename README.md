@@ -107,3 +107,36 @@ minimumStakes[1] = 1000; // EDIT for Quorum 2
 ```
 
 Ensure that the arrays for `strategyAddresses`, `strategyMultipliers`, and `minimumStakes` match the `numQuorums` length. Adjust these values to suit your deployment needs.
+
+# Registering Operators _(Work in Progress)_
+
+To register operators using the provided script, follow these steps:
+
+1. Ensure that you have set up the following environment variables:
+
+```sh
+export HOLESKY_RPC_URL=<your_holesky_rpc_url>
+export DEPLOYER_PRIVATE_KEY=<your_deployer_private_key>
+export REGISTRY_COORDINATOR=<your_registry_coordinator_address>
+export DELEGATION_MANAGER=<delegation_manager_address>
+export BLS_APK_REGISTRY=<your_bls_apk_registry_address>
+```
+
+Replace `<your_holesky_rpc_url>`, `<your_deployer_private_key>`, `<your_registry_coordinator_address>`, `<delegation_manager_address>` and `<your_bls_apk_registry_address>` with the appropriate values.
+
+2. Edit the `numberOfOperators` variable in the script to define the number of operators you want to register:
+
+```solidity
+uint256 numberOfOperators = 5; // Change this to the number of operators you want to register
+```
+
+3. Run the script to register the operators:
+
+```sh
+forge script script/RegisterOperator.s.sol -vvvv --rpc-url $HOLESKY_RPC_URL --via-ir --legacy
+```
+
+### Note
+
+- Ensure that each operator is not already registered before running the script.
+- The script generates unique private keys for each operator to avoid conflicts.
