@@ -110,6 +110,10 @@ Ensure that the arrays for `strategyAddresses`, `strategyMultipliers`, and `mini
 
 # Registering Operators _(Work in Progress)_
 
+## Currently this script registers operators with Delegation Manager only.
+
+### The script will be updated to register operators with the AVSServiceManager.
+
 To register operators using the provided script, follow these steps:
 
 1. Ensure that you have set up the following environment variables:

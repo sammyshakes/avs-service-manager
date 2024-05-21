@@ -8,6 +8,11 @@ import {BN254} from "@eigenlayer-middleware/src/libraries/BN254.sol";
 import {IDelegationManager} from "@eigenlayer/src/contracts/interfaces/IDelegationManager.sol";
 import {IStrategy} from "@eigenlayer/src/contracts/interfaces/IStrategy.sol";
 
+///////////////
+/// NOTE: This script currently only registers operators
+/// with the Delegation Manager
+///////////////
+
 contract RegisterOperatorScript is Script {
     RegistryCoordinator public registryCoordinator;
     IDelegationManager public delegationManager;
@@ -16,9 +21,6 @@ contract RegisterOperatorScript is Script {
         uint256 _deployerPrivateKey = uint256(vm.envBytes32("DEPLOYER_PRIVATE_KEY"));
         address _registryCoordinator = vm.envAddress("REGISTRY_COORDINATOR");
         address _delegationManager = vm.envAddress("DELEGATION_MANAGER");
-
-        // Start the deployment script
-        vm.startBroadcast(_deployerPrivateKey);
 
         registryCoordinator = RegistryCoordinator(_registryCoordinator);
         delegationManager = IDelegationManager(_delegationManager);
@@ -43,16 +45,21 @@ contract RegisterOperatorScript is Script {
             operatorIds[i] = keccak256(abi.encodePacked(operators[i]));
             quorumNumbersArray[i] = abi.encodePacked(uint8(i + 1));
 
-            // Register operator with Delegation Manager
+            // Register operator with Delegation Manager using the operator's private key
+            vm.startBroadcast(operatorPrivateKeys[i]);
             _registerWithDelegationManager(operators[i]);
+            // _registerOperator(quorumNumbersArray[i], operators[i], operatorPrivateKeys[i]);
+            vm.stopBroadcast();
         }
 
-        // Register operators with RegistryCoordinator
-        for (uint256 i = 0; i < numberOfOperators; i++) {
-            _registerOperator(quorumNumbersArray[i], operators[i], operatorPrivateKeys[i]);
-        }
+        // vm.startBroadcast(_deployerPrivateKey);
 
-        vm.stopBroadcast();
+        // // Register operators with RegistryCoordinator
+        // for (uint256 i = 0; i < numberOfOperators; i++) {
+        //     _registerOperator(quorumNumbersArray[i], operators[i], operatorPrivateKeys[i]);
+        // }
+
+        // vm.stopBroadcast();
     }
 
     function _registerWithDelegationManager(address operator) internal {
