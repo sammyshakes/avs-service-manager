@@ -140,7 +140,7 @@ uint256 numberOfOperators = 5; // Change this to the number of operators you wan
 3. Run the script to register the operators:
 
 ```sh
-forge script script/RegisterOperator.s.sol -vvvv --rpc-url $HOLESKY_RPC_URL --via-ir --legacy
+forge script script/RegisterOperator.s.sol -vvvv --rpc-url $HOLESKY_RPC_URL --legacy
 ```
 
 ### Note
