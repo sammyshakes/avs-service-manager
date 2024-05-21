@@ -25,7 +25,7 @@ To run the tests, use the following command:
 forge test -vvvv --rpc-url $HOLESKY_RPC_URL
 ```
 
-## Running the Deployment Script
+# Running the Deployment Script
 
 To deploy the `AVSServiceManager` using the provided script, run the following command:
 
@@ -43,7 +43,7 @@ Script ran successfully.
 1: address 0x6542b3f921141049789130BBA48E9FB38F68C374
 ```
 
-> NOTE: The output provides the address of the deployed `RegistryCoordinator` contract.
+> NOTE: The output provides the address of the deployed `RegistryCoordinator` and `BLSApkRegistry` contracts. These should be stored as environment variables for running subsequent scripts.
 
 > NOTE: The deployer account must have sufficient holesky testnet funds to deploy the smart contract.
 
