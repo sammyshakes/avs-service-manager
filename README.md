@@ -39,8 +39,11 @@ Output:
 Script ran successfully.
 
 == Return ==
-0: string "AVS Service Manager setup complete, Registry Coordinator Address:"
-1: address 0x6542b3f921141049789130BBA48E9FB38F68C374
+0: string "AVS Service Manager setup complete!"
+1: string "Registry Coordinator Address:"
+2: address 0x6542b3f921141049789130BBA48E9FB38F68C374
+3: string "BLSApkRegistry Address:"
+4: address 0x8825E0fDD4c8ED34D68e2A8d9a4c7bAa7F71d313
 ```
 
 > NOTE: The output provides the address of the deployed `RegistryCoordinator` and `BLSApkRegistry` contracts. These should be stored as environment variables for running subsequent scripts.
