@@ -46,7 +46,7 @@ Script ran successfully.
 4: address 0x8825E0fDD4c8ED34D68e2A8d9a4c7bAa7F71d313
 ```
 
-> NOTE: The output provides the address of the deployed `RegistryCoordinator` and `BLSApkRegistry` contracts. These should be stored as environment variables for running subsequent scripts.
+> NOTE: The output provides the address of the deployed `RegistryCoordinator` contract. This should be stored as an environment variable for running subsequent scripts.
 
 > NOTE: The deployer account must have sufficient holesky testnet funds to deploy the smart contract.
 
@@ -126,10 +126,9 @@ export HOLESKY_RPC_URL=<your_holesky_rpc_url>
 export DEPLOYER_PRIVATE_KEY=<your_deployer_private_key>
 export REGISTRY_COORDINATOR=<your_registry_coordinator_address>
 export DELEGATION_MANAGER=<delegation_manager_address>
-export BLS_APK_REGISTRY=<your_bls_apk_registry_address>
 ```
 
-Replace `<your_holesky_rpc_url>`, `<your_deployer_private_key>`, `<your_registry_coordinator_address>`, `<delegation_manager_address>` and `<your_bls_apk_registry_address>` with the appropriate values.
+Replace `<your_holesky_rpc_url>`, `<your_deployer_private_key>`, `<your_registry_coordinator_address>`  and `<delegation_manager_address>` with the appropriate values.
 
 2. Edit the `numberOfOperators` variable in the script to define the number of operators you want to register:
 
